@@ -57,8 +57,6 @@ birth_place = st.text_input("Enter your place of birth (City, Country)")
 
 if st.button("Get My Horoscope"):
     sign = get_zodiac_sign(birth_date.month, birth_date.day)
-    birth_time = st.time_input("Enter your time of birth...")
-    birth_place = st.text_input("Enter your place of birth...")
     horoscope = get_horoscope(sign)
     st.subheader(f"Hello {name}!")
     st.write(f"🌟 Your Zodiac Sign is **{sign}**")
