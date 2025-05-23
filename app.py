@@ -23,7 +23,7 @@ def get_zodiac_sign(month, day):
             return sign
     return "Capricorn"
 
-# Horoscope API (working alternative)
+# Horoscope API
 def get_horoscope(sign):
     sign = sign.lower()
     url = f"https://ohmanda.com/api/horoscope/{sign}/"
@@ -36,13 +36,12 @@ def get_horoscope(sign):
     except Exception as e:
         return f"⚠️ API Exception: {str(e)}"
 
-# Streamlit app UI
+# UI
 st.set_page_config(page_title="Astrologer Bot", page_icon="🔮")
 st.title("🔮 Astrologer Bot")
 
 name = st.text_input("Enter your name")
 
-# ✅ Allow older birth dates (back to 1900)
 birth_date = st.date_input(
     "Select your birth date",
     value=datetime.date(2000, 1, 1),
@@ -50,10 +49,20 @@ birth_date = st.date_input(
     max_value=datetime.date.today()
 )
 
+# ✅ Collect time of birth
+birth_time = st.time_input("Enter your time of birth (approximate if unsure)", value=datetime.time(12, 0))
+
+# ✅ Collect place of birth
+birth_place = st.text_input("Enter your place of birth (City, Country)")
+
 if st.button("Get My Horoscope"):
     sign = get_zodiac_sign(birth_date.month, birth_date.day)
     horoscope = get_horoscope(sign)
+
     st.subheader(f"Hello {name}!")
-    st.write(f"🌟 Your Zodiac Sign is **{sign}**")
-    st.write("🪐 Today's Horoscope:")
+    st.write(f"📅 **Date of Birth**: {birth_date.strftime('%B %d, %Y')}")
+    st.write(f"🕒 **Time of Birth**: {birth_time.strftime('%I:%M %p')}")
+    st.write(f"📍 **Place of Birth**: {birth_place}")
+    st.write(f"🌟 **Zodiac Sign**: {sign}")
+    st.markdown("🪐 **Today's Horoscope:**")
     st.info(horoscope)
