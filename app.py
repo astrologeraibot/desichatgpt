@@ -24,15 +24,18 @@ def get_zodiac_sign(month, day):
     return "Capricorn"
 
 # Horoscope API
+
 def get_horoscope(sign):
-    url = f"https://aztro.sameerkumar.website/?sign={sign.lower()}&day=today"
-    response = requests.post(url)
-    print("API response code:", response.status_code)  # 🔍 Debug line
-    print("API response body:", response.text)         # 🔍 Debug line
-    if response.status_code == 200:
-        return response.json()["description"]
-    else:
-        return f"⚠️ API Error: {response.status_code} - {response.text}"
+    sign = sign.lower()
+    url = f"https://ohmanda.com/api/horoscope/{sign}/"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()["horoscope"]
+        else:
+            return f"⚠️ API Error: {response.status_code}"
+    except Exception as e:
+        return f"⚠️ API Exception: {str(e)}"
 
 # Streamlit app UI
 st.set_page_config(page_title="Astrologer Bot", page_icon="🔮")
