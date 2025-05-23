@@ -1,6 +1,8 @@
 import streamlit as st
 import datetime
 import requests
+from dateutil import parser
+import re
 
 # Prediction data
 predictions = {
@@ -80,32 +82,34 @@ if user_input:
 
         if user_input.lower() == "/start":
             response = "👋 Hi! I'm your astrologer bot. Please tell me:\n\n`My name is John`, `I was born on 21 July 1995 at 9:00 AM in Delhi`"
-        
-        # Capture user info
+
         elif "name is" in user_input.lower():
             name = user_input.split("name is")[-1].strip().split()[0]
             st.session_state.user_info["name"] = name
             response = f"Hi {name}, nice to meet you! Now tell me your date, time and place of birth."
 
-        elif "born on" in user_input.lower():
+        elif any(keyword in user_input.lower() for keyword in ["born", "birth", "dob"]):
             try:
-                import re
-                match = re.search(r"born on (\d{1,2}) (\w+) (\d{4}) at (\d{1,2}):(\d{2}) ?([APMapm]{2}) in (.+)", user_input)
+                match = re.search(r"(\d{1,2}[-/ ]\d{1,2}[-/ ]\d{2,4}|\d{4}-\d{2}-\d{2}|\w+ \d{1,2}, \d{4})[ ,]*at?[ ,]*(\d{1,2}):?(\d{0,2}) ?([apAP]?[mM]?)?[ ,]*in (.+)", user_input)
                 if match:
-                    day, month_name, year, hour, minute, ampm, place = match.groups()
-                    birth_date = datetime.datetime.strptime(f"{day} {month_name} {year}", "%d %B %Y").date()
-                    hour = int(hour) % 12 + (12 if ampm.lower() == "pm" else 0)
-                    birth_time = datetime.time(hour, int(minute))
-                    st.session_state.user_info["dob"] = birth_date
+                    date_str, hour, minute, ampm, place = match.groups()
+                    hour = int(hour)
+                    minute = int(minute) if minute else 0
+                    if ampm and "p" in ampm.lower() and hour < 12:
+                        hour += 12
+                    elif ampm and "a" in ampm.lower() and hour == 12:
+                        hour = 0
+                    dob = parser.parse(date_str, fuzzy=True).date()
+                    birth_time = datetime.time(hour, minute)
+                    st.session_state.user_info["dob"] = dob
                     st.session_state.user_info["time"] = birth_time
-                    st.session_state.user_info["place"] = place
-                    response = f"Thanks! I've got your birth details. Ask me your horoscope, sun sign, or love prediction!"
+                    st.session_state.user_info["place"] = place.strip()
+                    response = f"✅ Birth details recorded:\n\n📅 {dob}, 🕒 {birth_time}, 📍 {place.strip()}\n\nAsk me for your horoscope, sun sign, or love prediction!"
                 else:
-                    response = "Please use this format: `I was born on 21 July 1995 at 9:00 AM in Delhi`"
-            except:
-                response = "Couldn't read your birth details. Try again."
+                    response = "❌ I couldn't read your full birth details. Please try: `I was born on 21 July 1995 at 9:00 AM in Delhi`"
+            except Exception as e:
+                response = f"⚠️ Error parsing birth info: {e}"
 
-        # Provide readings
         elif "sun sign" in user_input.lower():
             dob = st.session_state.user_info["dob"]
             if dob:
