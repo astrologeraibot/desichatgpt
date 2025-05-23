@@ -23,15 +23,6 @@ def get_zodiac_sign(month, day):
             return sign
     return "Capricorn"
 
-
-# Set default birthdate range
-birth_date = st.date_input(
-    "Select your birth date",
-    value=datetime.date(2000, 1, 1),  # default selected date
-    min_value=datetime.date(1900, 1, 1),  # users can go back to 1900
-    max_value=datetime.date.today()  # cannot select future date
-)
-
 # Horoscope API
 
 def get_horoscope(sign):
