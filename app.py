@@ -23,7 +23,6 @@ def get_zodiac_sign(month, day):
             return sign
     return "Capricorn"
 
-import datetime
 
 # Set default birthdate range
 birth_date = st.date_input(
