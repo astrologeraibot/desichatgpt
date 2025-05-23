@@ -1,8 +1,8 @@
 import streamlit as st
 import requests
-from datetime import datetime
+import datetime
 
-# Zodiac logic
+# Zodiac sign logic
 def get_zodiac_sign(month, day):
     zodiac = [
         ("Capricorn", (12, 22), (1, 19)),
@@ -23,8 +23,7 @@ def get_zodiac_sign(month, day):
             return sign
     return "Capricorn"
 
-# Horoscope API
-
+# Horoscope API (working alternative)
 def get_horoscope(sign):
     sign = sign.lower()
     url = f"https://ohmanda.com/api/horoscope/{sign}/"
@@ -42,12 +41,19 @@ st.set_page_config(page_title="Astrologer Bot", page_icon="🔮")
 st.title("🔮 Astrologer Bot")
 
 name = st.text_input("Enter your name")
-birth_date = st.date_input("Select your birth date")
+
+# ✅ Allow older birth dates (back to 1900)
+birth_date = st.date_input(
+    "Select your birth date",
+    value=datetime.date(2000, 1, 1),
+    min_value=datetime.date(1900, 1, 1),
+    max_value=datetime.date.today()
+)
 
 if st.button("Get My Horoscope"):
     sign = get_zodiac_sign(birth_date.month, birth_date.day)
     horoscope = get_horoscope(sign)
     st.subheader(f"Hello {name}!")
-    st.write(f"Your Zodiac Sign is **{sign}**")
+    st.write(f"🌟 Your Zodiac Sign is **{sign}**")
     st.write("🪐 Today's Horoscope:")
     st.info(horoscope)
