@@ -1,5 +1,3 @@
-st.write("🚀 Astrologer Chat v2.0")
-
 import streamlit as st
 import datetime
 import requests
