@@ -26,11 +26,13 @@ def get_zodiac_sign(month, day):
 # Horoscope API
 def get_horoscope(sign):
     url = f"https://aztro.sameerkumar.website/?sign={sign.lower()}&day=today"
-    response = requests.post(url)  # ✅ Must be POST, not GET
+    response = requests.post(url)
+    print("API response code:", response.status_code)  # 🔍 Debug line
+    print("API response body:", response.text)         # 🔍 Debug line
     if response.status_code == 200:
         return response.json()["description"]
     else:
-        return f"Error: {response.status_code} - Unable to fetch horoscope."
+        return f"⚠️ API Error: {response.status_code} - {response.text}"
 
 # Streamlit app UI
 st.set_page_config(page_title="Astrologer Bot", page_icon="🔮")
