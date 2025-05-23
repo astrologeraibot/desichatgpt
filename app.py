@@ -57,12 +57,11 @@ birth_place = st.text_input("Enter your place of birth (City, Country)")
 
 if st.button("Get My Horoscope"):
     sign = get_zodiac_sign(birth_date.month, birth_date.day)
+    birth_time = st.time_input("Enter your time of birth...")
+    birth_place = st.text_input("Enter your place of birth...")
     horoscope = get_horoscope(sign)
-
     st.subheader(f"Hello {name}!")
-    st.write(f"📅 **Date of Birth**: {birth_date.strftime('%B %d, %Y')}")
-    st.write(f"🕒 **Time of Birth**: {birth_time.strftime('%I:%M %p')}")
-    st.write(f"📍 **Place of Birth**: {birth_place}")
-    st.write(f"🌟 **Zodiac Sign**: {sign}")
-    st.markdown("🪐 **Today's Horoscope:**")
+    st.write(f"🌟 Your Zodiac Sign is **{sign}**")
+    st.write("🪐 Today's Horoscope:")
     st.info(horoscope)
+
