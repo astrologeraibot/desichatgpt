@@ -185,3 +185,5 @@ if user_input:
 
         st.session_state.chat_history.append(("assistant", response))
         st.markdown(response)
+
+ https://theastrologerbot.com/
